@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pondok Finder</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <style>
+            html, body, #map-canvas {
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            }
+            .head {
+                position:absolute; 
+                z-index:1; 
+                background-color:white; 
+                width:100%;
+                font-size: 17px;
+                padding: 5px;
+                border-bottom: 1px solid black;
+            }
+        </style>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>        
+    </head>
+    <body>
+        <div class="head"><center>Pondok Finder</center></div>
+        <div id="map-canvas"></div>
+    </body>
+    <script>
+        var lat = localStorage.getItem("lat");
+        var lng = localStorage.getItem("long");
+        var end = new google.maps.LatLng(lat,lng);
+        var directionsDisplay;
+        var directionsService = new google.maps.DirectionsService();
+        var map;
+
+        function initialize() {
+          directionsDisplay = new google.maps.DirectionsRenderer();
+          var malang = new google.maps.LatLng(-7.982830, 112.630974);
+          var mapOptions = {
+            zoom:8,
+            center: malang
+          };
+          map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+          directionsDisplay.setMap(map);
+
+          if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              var pos = new google.maps.LatLng(position.coords.latitude,
+                                               position.coords.longitude);
+
+              var infowindow = new google.maps.InfoWindow({
+                map: map,
+                position: pos,
+                content: 'Kamu'
+              });
+
+              map.setCenter(pos);
+              calcRoute(pos, end);
+            }, function() {
+              handleNoGeolocation(true);
+            });
+          } else {
+            handleNoGeolocation(false);
+          }
+        }
+
+        function handleNoGeolocation(errorFlag) {
+          if (errorFlag) {
+            var content = 'Error: The Geolocation service failed.';
+          } else {
+            var content = 'Error: Your browser doesn\'t support geolocation.';
+          }
+
+          var options = {
+            map: map,
+            position: new google.maps.LatLng(-7.982830, 112.630974),
+            content: content
+          };
+
+          var infowindow = new google.maps.InfoWindow(options);
+          map.setCenter(options.position);
+        }
+
+        function calcRoute(start, end) {
+          // var start = document.getElementById('start').value;
+          // var end = document.getElementById('end').value;
+          var request = {
+              origin:start,
+              destination:end,
+              travelMode: google.maps.TravelMode.DRIVING
+          };
+          directionsService.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+              directionsDisplay.setDirections(response);
+            }
+          });
+        }
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+</html>

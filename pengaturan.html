@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pondok Finder</title>
+	<link href="css/style.css" rel="stylesheet" type="text/css"/>
+	<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+</head>
+<body class="edge">
+    <input tipe="text" id="key" class="pencarian" placeholder="input domain database" onkeyup="simpan()">
+    <div id="content"></div>
+</body>
+<script type="text/javascript">
+    function simpan(){
+        var key = $('#key').val();
+        localStorage.setItem('domain',key);
+    }
+    $(document).ready(function(){
+        var key = localStorage.getItem('domain');
+        $('#key').val(key);
+    });
+</script> 
+</html>

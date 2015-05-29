@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pondok Finder</title>
+	<link href="css/style.css" rel="stylesheet" type="text/css"/>
+	<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<center><h2>APLIKASI ANDROID MENGGUNAKAN METODE LBS BERBASIS NAVIGASI GUNA PENCARIAN PONDOK PESANTREN DI WILAYAH KOTA MALANG</h2></center>
+	<div class="menu-container">
+		<a class="menu" href="posisi.html"><center><h3>Posisi</h3></center></a>
+		<a class="menu" href="pondok.html"><center><h3>Pondok</h3></center></a>
+		<a class="menu last" href="cari-pondok.html"><center><h3>Pencarian</h3></center></a>
+		<a class="menu" href="petunjuk.html"><center><h3>Petunjuk</h3></center></a>
+		<a class="menu" href="tentang.html"><center><h3>Tentang</h3></center></a>
+		<a class="menu last" href="pengaturan.html"><center><h3>Pengaturan</h3></center></a>
+	</div>
+</body>
+<script type="text/javascript">
+	function load_list(){
+        var domain = localStorage.getItem("domain");
+        if (domain == null) {
+        	window.location = "pengaturan.html";
+        }
+    }
+    $(document).ready(function(){
+        load_list();
+    });
+</script> 
+</html>

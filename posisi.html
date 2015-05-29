@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pondok Finder</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <style>
+            html, body, #map-canvas {
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            }
+            .head {
+                position:absolute; 
+                z-index:1; 
+                background-color:white; 
+                width:100%;
+                font-size: 17px;
+                padding: 5px;
+                border-bottom: 1px solid black;
+            }
+        </style>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+        <script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>     
+    </head>
+    <body>
+        <div class="head"><center>Pondok Terdekat</center></div>
+        <div id="map-canvas"></div>
+    </body>
+    <script>
+      var map;
+      var pondok;
+
+      function get_pondok_loc() {
+        var id = localStorage.getItem("id_pondok");
+        var domain = localStorage.getItem("domain") + "/get_pondok_loc.php";
+        $.ajax({
+          async: false,
+          type: "POST",
+          url: domain,
+          success: function(msg){
+            pondok = JSON.parse(msg);
+          }
+        });
+      }
+
+      function initialize() {
+        get_pondok_loc();
+        var pondokWindow;
+
+        var mapOptions = {
+          zoom: 14
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+
+        for (var i = pondok.length - 1; i >= 0; i--) {
+          var posi = new google.maps.LatLng(pondok[i]['lat'], pondok[i]['long']);
+          var name = '<a class="posisi" href="#" onclick="open_link('+pondok[i]['id']+')">'+pondok[i]['nama']+'</a>';
+          pondokWindow = new google.maps.InfoWindow({
+            position: posi,
+            map: map,
+            content: name
+          });
+
+          // google.maps.event.addListener(pondokWindow, 'click', (function(i) {
+          //   return function() {
+          //     open_link(pondok[i]['id']);
+          //   }
+          // })(i));
+        }
+
+        // Try HTML5 geolocation
+        if(navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = new google.maps.LatLng(position.coords.latitude,
+                                             position.coords.longitude);
+
+            var infowindow = new google.maps.InfoWindow({
+              map: map,
+              position: pos,
+              content: 'You'
+            });
+
+            map.setCenter(pos);
+          }, function() {
+            handleNoGeolocation(true);
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleNoGeolocation(false);
+        }
+      }
+
+      function handleNoGeolocation(errorFlag) {
+        if (errorFlag) {
+          var content = 'Error: The Geolocation service failed.';
+        } else {
+          var content = 'Error: Your browser doesn\'t support geolocation.';
+        }
+
+        var options = {
+          map: map,
+          position: new google.maps.LatLng(60, 105),
+          content: content
+        };
+
+        var infowindow = new google.maps.InfoWindow(options);
+        map.setCenter(options.position);
+      }
+
+      function open_link(id) {
+        if (typeof(Storage) != "undefined") {
+          localStorage.setItem("id_pondok", id);
+          window.location = "pondok-detil.html";
+        } else {
+          alert("Sorry, your browser does not support Web Storage...");
+        }
+      }
+
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+</html>
