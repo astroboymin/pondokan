@@ -13,7 +13,7 @@
     <author href="http://cloud-astro.com" email="cloudastro.id@gmail.com">
         Cloud Astro
     </author>
- 
+  <feature name="http://api.phonegap.com/1.0/geolocation"/>
     <gap:plugin name="org.apache.cordova.geolocation" version="0.3.10" />
  
 </widget>
